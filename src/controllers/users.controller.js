@@ -31,7 +31,7 @@ export async function signin(req, res){
 
     try{
         const token = uuid()
-        await db.query(``)
+        // await db.query(``)
         res.status(200).send(token)
     } catch (err) {
         res.status(500).send(err.message)
