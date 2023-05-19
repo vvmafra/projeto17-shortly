@@ -35,7 +35,7 @@ export async function signin(req, res){
         const token = uuid()
         const createdAt = dayjs()
 
-        await db.query(`INSERT INTO logins (idUser, token, createdAt) VALUES ($1, $2)`, [emailExist.rows[0].id, token, createdAt])
+        await db.query(`INSERT INTO logins (idUser, token, createdAt) VALUES ($1, $2, $3)`, [emailExist.rows[0].id, token, createdAt])
         res.status(200).send({token: token})
     } catch (err) {
         res.status(500).send(err.message)
