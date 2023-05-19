@@ -24,5 +24,6 @@ CREATE TABLE public."users" (
     id serial primary key NOT NULL,
     name text NOT NULL,
     email text NOT NULL,
-    password text NOT NULL
+    password text NOT NULL,
+    createdAt timestamp
 );

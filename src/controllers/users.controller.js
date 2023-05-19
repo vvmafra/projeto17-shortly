@@ -23,16 +23,16 @@ export async function signup(req, res){
 export async function signin(req, res){
     const {email, password} = req.body
 
-    const emailExist = await db.query(`SELECT * FROM users WHERE email=$1;`, [email])
-    if(emailExist.rows.length === 0) return res.status(401).send("Email not registered")
-
-    const checkPassword = bcrypt.compareSync(password, emailExist.rows[0].password)
-    if(!checkPassword) return res.status(401).send("Password doesn't match with email")
-
     try{
+        const emailExist = await db.query(`SELECT * FROM users WHERE email=$1;`, [email])
+        if(emailExist.rows.length === 0) return res.status(401).send("Email not registered")
+
+        const checkPassword = bcrypt.compareSync(password, emailExist.rows[0].password)
+        if(!checkPassword) return res.status(401).send("Password doesn't match with email")
+
         const token = uuid()
         // await db.query(``)
-        res.status(200).send(token)
+        res.status(200).send({token: token})
     } catch (err) {
         res.status(500).send(err.message)
     }
