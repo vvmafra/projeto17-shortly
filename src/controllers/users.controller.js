@@ -1,6 +1,7 @@
 import { db } from "../database/database.connection.js"
 import {v4 as uuid} from "uuid"
 import bcrypt from "bcrypt"
+import dayjs from "dayjs"
 
 export async function signup(req, res){
     const {name,  email, password, confirmPassword} = req.body
@@ -33,7 +34,7 @@ export async function signin(req, res){
 
         const token = uuid()
         const createdAt = dayjs()
-        
+
         await db.query(`INSERT INTO logins (idUser, token, createdAt) VALUES ($1, $2)`, [emailExist.rows[0].id, token, createdAt])
         res.status(200).send({token: token})
     } catch (err) {
