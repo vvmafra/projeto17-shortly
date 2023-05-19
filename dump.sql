@@ -20,3 +20,9 @@ SET row_security = off;
 -- PostgreSQL database dump complete
 --
 
+CREATE TABLE public."users" (
+    id serial primary key NOT NULL,
+    name text NOT NULL,
+    email text NOT NULL,
+    password text NOT NULL
+);
