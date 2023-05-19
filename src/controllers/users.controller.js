@@ -12,8 +12,9 @@ export async function signup(req, res){
 
     try{
         const hash = bcrypt.hashSync(password, 10)
+        const createdAt = dayjs()
 
-        await db.query(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3)`, [name, email, hash])
+        await db.query(`INSERT INTO users (name, email, password, createdAt) VALUES ($1, $2, $3, $4)`, [name, email, hash, createdAt])
         res.status(201).send("Sucessfully registered user")
     } catch (err) {
         res.status(500).send(err.message)
@@ -31,7 +32,9 @@ export async function signin(req, res){
         if(!checkPassword) return res.status(401).send("Password doesn't match with email")
 
         const token = uuid()
-        // await db.query(``)
+        const createdAt = dayjs()
+        
+        await db.query(`INSERT INTO logins (idUser, token, createdAt) VALUES ($1, $2)`, [emailExist.rows[0].id, token, createdAt])
         res.status(200).send({token: token})
     } catch (err) {
         res.status(500).send(err.message)
