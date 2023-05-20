@@ -11,10 +11,14 @@ export async function postUrls(req, res){
         if (sessions.rows.length === 0) return res.sendStatus(401)
 
         const userSession = await db.query(`SELECT * FROM users WHERE "id"=$1`,[sessions.rows[0].idUser])
+        
+        const idUser = userSession.rows[0].id
+        const idLogin = sessions.rows[0].id
         const shortUrl = nanoid()
+        const createdAt = dayjs()
 
-        console.log(shortUrl)
-        // await db.query(`INSERT INTO urls ("idUser", "idLogin", url, "shortUrl", views, "createdAt") VALUES ($1, $2, $3, $4, $5, $6)`,[])
+        await db.query(`INSERT INTO urls ("idUser", "idLogin", url, "shortUrl", "createdAt") VALUES 
+        ($1, $2, $3, $4, $5);`,[idUser, idLogin, url, shortUrl, createdAt])
 
         res.sendStatus(201)
     } catch (err) {
