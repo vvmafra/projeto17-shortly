@@ -30,10 +30,10 @@ export async function postUrls(req, res){
     }
 }
 
-export async function getPostId(req, res){
+export async function getUrlId(req, res){
     const {id} = req.params
 
-    const urlFind = await db.query(`SELECT * FROM urls WHERE id=$1`, [id])
+    const urlFind = await db.query(`SELECT * FROM urls WHERE id=$1;`, [id])
     if (urlFind.rows.length === 0) return res.sendStatus(404)
 
     try {
@@ -47,6 +47,19 @@ export async function getPostId(req, res){
     } catch (err) {
         res.status(500).send(err.message)
     }
+}
 
+export async function getOpenUrl(req, res){
+    const {shortUrl} = req.params
 
+    const urlFind = await db.query(`SELECT * FROM urls WHERE "shortUrl"=$1;`, [shortUrl])
+    if (urlFind.rows.length === 0) return res.sendStatus(404)
+
+    try {
+        await db.query(`UPDATE urls SET views = views + 1 WHERE "shortUrl"=$1;`, [shortUrl])
+        console.log(urlFind.rows[0])
+        res.redirect(302, urlFind.rows[0].url)
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
 }
