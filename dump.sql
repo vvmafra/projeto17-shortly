@@ -22,16 +22,25 @@ CREATE TABLE public."users" (
     name text NOT NULL,
     email text NOT NULL,
     password text NOT NULL,
-    createdAt timestamp
+    "createdAt" timestamp
 );
 
 CREATE TABLE public."users" (
     id serial primary key NOT NULL,
-    idUser integer NOT NULL,
+    "idUser" integer NOT NULL,
     token text NOT NULL,
-    createdAt timestamp
+    "createdAt" timestamp
 );
 
+CREATE TABLE public."urls" (
+	"id" serial primary key NOT NULL,
+	"idUser" integer NOT NULL,
+	"idLogin" integer NOT NULL,
+	"url" TEXT NOT NULL,
+	"shortUrl" TEXT NOT NULL UNIQUE,
+	"views" integer DEFAULT '0',
+	"createdAt" TIMESTAMP
+);
 --
 -- PostgreSQL database dump complete
 --
