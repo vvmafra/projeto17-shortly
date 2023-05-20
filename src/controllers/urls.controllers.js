@@ -10,7 +10,7 @@ export async function postUrls(req, res){
         const sessions = await db.query(`SELECT * FROM logins WHERE token=$1`, [token])
         if (sessions.rows.length === 0) return res.sendStatus(401)
 
-        const userSession = await db.query(`SELECT * FROM users WHERE "idUser"=$1`,[sessions.rows[0].idUser])
+        const userSession = await db.query(`SELECT * FROM users WHERE "id"=$1`,[sessions.rows[0].idUser])
         const alphanumeric = require('nanoid-generator/alphanumeric');
 
         console.log(alphanumeric)
