@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import { db } from "../database/database.connection.js"
+import dayjs from "dayjs";
 
 export async function postUrls(req, res){
     const {url} = req.body
@@ -10,10 +11,16 @@ export async function postUrls(req, res){
         const sessions = await db.query(`SELECT * FROM logins WHERE token=$1`, [token])
         if (sessions.rows.length === 0) return res.sendStatus(401)
 
-        const userSession = await db.query(`SELECT * FROM users WHERE "id"=$1`,[sessions.rows[0].idUser])
+        const userSession = await db.query(`SELECT * FROM users WHERE "id"=$1`,[sessions.rows[0].iduser])
         
+        
+
+
         const idUser = userSession.rows[0].id
         const idLogin = sessions.rows[0].id
+        console.log(idUser)
+        console.log(idLogin)
+
         const shortUrl = nanoid()
         const createdAt = dayjs()
 
