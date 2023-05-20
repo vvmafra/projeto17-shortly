@@ -13,9 +13,6 @@ export async function postUrls(req, res){
 
         const userSession = await db.query(`SELECT * FROM users WHERE "id"=$1`,[sessions.rows[0].iduser])
         
-        
-
-
         const idUser = userSession.rows[0].id
         const idLogin = sessions.rows[0].id
         console.log(idUser)
@@ -31,4 +28,25 @@ export async function postUrls(req, res){
     } catch (err) {
         res.status(500).send(err.message)
     }
+}
+
+export async function getPostId(req, res){
+    const {id} = req.params
+
+    const urlFind = await db.query(`SELECT * FROM urls WHERE id=$1`, [id])
+    if (urlFind.rows.length === 0) return res.sendStatus(404)
+
+    try {
+    
+    const idUrl = urlFind.rows[0].id
+    const shortUrl = urlFind.rows[0].shortUrl
+    const url = urlFind.rows[0].url
+    
+    res.status(200).send({id: idUrl, shortUrl: shortUrl, url: url})
+
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+
+
 }
