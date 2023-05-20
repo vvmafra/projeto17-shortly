@@ -16,9 +16,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- PostgreSQL database dump complete
---
 
 CREATE TABLE public."users" (
     id serial primary key NOT NULL,
@@ -27,3 +24,14 @@ CREATE TABLE public."users" (
     password text NOT NULL,
     createdAt timestamp
 );
+
+CREATE TABLE public."users" (
+    id serial primary key NOT NULL,
+    idUser integer NOT NULL,
+    token text NOT NULL,
+    createdAt timestamp
+);
+
+--
+-- PostgreSQL database dump complete
+--
