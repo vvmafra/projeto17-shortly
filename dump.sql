@@ -25,7 +25,7 @@ CREATE TABLE public."users" (
     "createdAt" timestamp
 );
 
-CREATE TABLE public."users" (
+CREATE TABLE public."logins" (
     id serial primary key NOT NULL,
     "idUser" integer NOT NULL,
     token text NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE public."urls" (
 	"idLogin" integer NOT NULL,
 	"url" TEXT NOT NULL,
 	"shortUrl" TEXT NOT NULL UNIQUE,
-	"views" integer DEFAULT '0',
+	"visitCount" integer DEFAULT '0',
 	"createdAt" TIMESTAMP
 );
 --
