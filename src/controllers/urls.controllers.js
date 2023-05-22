@@ -15,8 +15,6 @@ export async function postUrls(req, res){
         
         const idUser = userSession.rows[0].id
         const idLogin = sessions.rows[0].id
-        console.log(idUser)
-        console.log(idLogin)
 
         const shortUrl = nanoid()
         const createdAt = dayjs()
@@ -24,7 +22,9 @@ export async function postUrls(req, res){
         await db.query(`INSERT INTO urls ("idUser", "idLogin", url, "shortUrl", "createdAt") VALUES 
         ($1, $2, $3, $4, $5);`,[idUser, idLogin, url, shortUrl, createdAt])
 
-        res.sendStatus(201)
+        const infoUrl = await db.query(`SELECT id, "shortUrl" from urls WHERE "shortUrl"=$1`, [shortUrl])
+
+        res.send(infoUrl).status(201)
     } catch (err) {
         res.status(500).send(err.message)
     }
