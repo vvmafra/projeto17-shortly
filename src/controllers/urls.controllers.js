@@ -97,11 +97,9 @@ export async function getUsersMe(req, res){
         const url = await db.query(`SELECT id, url, "shortUrl", "visitCount" FROM urls WHERE "idUser"=$1`,[sessions.rows[0].idUser])
 
         const totalVisitCount = await db.query(`SELECT SUM("visitCount") AS "visitCount" FROM urls WHERE "idUser"=$1`,[sessions.rows[0].idUser])
-        console.log(url.rows)
         
         const obj = totalVisitCount.rows[0]
         const visitCount = parseInt(obj.visitCount)
-        console.log(visitCount)
 
         const user = await db.query(`SELECT * FROM users WHERE id=$1`, [sessions.rows[0].idUser])
 
@@ -111,6 +109,21 @@ export async function getUsersMe(req, res){
     } catch (err) {
         res.status(500).send(err.message)
     }
+}
 
-
+export async function getRanking(req, res){
+    try{
+    const urlRanking = await db.query(`SELECT users.id, 
+    users.name, 
+    COUNT(urls.url) AS "linksCount", 
+    SUM(urls."visitCount") AS "visitCount"
+    FROM urls
+    LEFT JOIN users ON urls."idUser" = users.id
+    GROUP BY users.id
+    ORDER BY "visitCount" DESC
+    LIMIT 10`)
+    res.send(urlRanking.rows).status(200)
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
 }
