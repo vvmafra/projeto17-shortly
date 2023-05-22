@@ -24,7 +24,7 @@ export async function postUrls(req, res){
 
         const infoUrl = await db.query(`SELECT id, "shortUrl" from urls WHERE "shortUrl"=$1`, [shortUrl])
 
-        res.send(infoUrl).status(201)
+        res.send(infoUrl.rows[0]).status(201)
     } catch (err) {
         res.status(500).send(err.message)
     }
