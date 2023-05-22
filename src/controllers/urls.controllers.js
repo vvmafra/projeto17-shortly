@@ -56,7 +56,7 @@ export async function getOpenUrl(req, res){
     if (urlFind.rows.length === 0) return res.sendStatus(404)
 
     try {
-        await db.query(`UPDATE urls SET views = views + 1 WHERE "shortUrl"=$1;`, [shortUrl])
+        await db.query(`UPDATE urls SET visitCount = visitCount + 1 WHERE "shortUrl"=$1;`, [shortUrl])
         console.log(urlFind.rows[0])
         res.redirect(302, urlFind.rows[0].url)
     } catch (err) {
@@ -75,7 +75,7 @@ export async function deleteUrl(req, res){
 
         const url = await db.query(`SELECT * FROM urls WHERE id=$1`,[id])
         if (url.rows.length === 0) res.sendStatus(404)
-        if (url.rows[0].idUser !== sessions.rows[0].iduser) return res.sendStatus(401)
+        if (url.rows[0].idUser !== sessions.rows[0].idUser) return res.sendStatus(401)
 
         await db.query(`DELETE FROM urls WHERE id=$1`,[id])
 
@@ -84,4 +84,33 @@ export async function deleteUrl(req, res){
     catch (err) {
         res.status(500).send(err.message)
     }
+}
+
+export async function getUsersMe(req, res){
+    const { authorization } = req.headers;
+    const token = authorization?.replace("Bearer ", "")
+
+    try {
+        const sessions = await db.query(`SELECT * FROM logins WHERE token=$1`, [token])
+        if (sessions.rows.length === 0) return res.sendStatus(401)
+
+        const url = await db.query(`SELECT id, url, "shortUrl", "visitCount" FROM urls WHERE "idUser"=$1`,[sessions.rows[0].idUser])
+
+        const totalVisitCount = await db.query(`SELECT SUM("visitCount") AS "visitCount" FROM urls WHERE "idUser"=$1`,[sessions.rows[0].idUser])
+        console.log(url.rows)
+        
+        const obj = totalVisitCount.rows[0]
+        const visitCount = parseInt(obj.visitCount)
+        console.log(visitCount)
+
+        const user = await db.query(`SELECT * FROM users WHERE id=$1`, [sessions.rows[0].idUser])
+
+        const urlObject = {id: user.rows[0].id, name: user.rows[0].name, visitCount: visitCount, shortenedUrls: url.rows}
+
+        res.send(urlObject).status(200)
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+
+
 }
