@@ -63,3 +63,25 @@ export async function getOpenUrl(req, res){
         res.status(500).send(err.message)
     }
 }
+
+export async function deleteUrl(req, res){
+    const {id} = req.params
+    const { authorization } = req.headers;
+    const token = authorization?.replace("Bearer ", "")
+
+    try{
+        const sessions = await db.query(`SELECT * FROM logins WHERE token=$1`, [token])
+        if (sessions.rows.length === 0) return res.sendStatus(401)
+
+        const url = await db.query(`SELECT * FROM urls WHERE id=$1`,[id])
+        if (url.rows.length === 0) res.sendStatus(404)
+        if (url.rows[0].idUser !== sessions.rows[0].iduser) return res.sendStatus(401)
+
+        await db.query(`DELETE FROM urls WHERE id=$1`,[id])
+
+        res.sendStatus(204)
+    }
+    catch (err) {
+        res.status(500).send(err.message)
+    }
+}
